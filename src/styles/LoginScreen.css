@@ -87,3 +87,32 @@
    font-weight: 600;
    cursor: pointer;
 }
+
+@media screen and (width <= 768px) {
+   .loginScreen__body {
+      top: 15%;
+   }
+
+   .loginScreen__logo {
+      width: 100px;
+   }
+   .loginScreen__body > h1 {
+      font-size: 2.5rem;
+      margin-bottom: 15px;
+   }
+   .loginScreen__body > h2 {
+      font-size: 1.5rem;
+      margin-bottom: 25px;
+   }
+   .loginScreen__body > h3 {
+      font-size: 1rem;
+   }
+
+   .loginScreen__input > form > input {
+      height: 25px;
+      width: 25%;
+   }
+   .loginScreen__getStarted {
+      font-size: 0.82rem;
+   }
+}

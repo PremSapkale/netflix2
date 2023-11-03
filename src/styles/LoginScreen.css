@@ -56,7 +56,7 @@
 
 .loginScreen__body {
    position: absolute;
-   top: 30%;
+   top: 25%;
    left: 0;
    right: 0;
    margin-left: auto;
@@ -70,20 +70,60 @@
 .loginScreen__input {
    margin: 20px;
 }
+.loginScreen__input > form {
+   width: 100%;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   flex-direction: column;
+   /* gap: rem; */
+}
 .loginScreen__input > form > input {
-   padding: 10px;
-   outline-width: 0;
-   height: 30px;
+   outline: none;
    width: 30%;
+   height: 40px;
+   margin-bottom: 14px;
+   border-radius: 5px;
    border: none;
-   max-width: 600px;
+   padding: 5px 15px;
 }
 .loginScreen__getStarted {
+   width: 32.5%;
    padding: 16px 20px;
    font-size: 1rem;
+   border-radius: 5px;
    color: #fff;
    background-color: #e50914;
    border: none;
    font-weight: 600;
    cursor: pointer;
+}
+
+@media screen and (width <= 768px) {
+   .loginScreen__body {
+      top: 15%;
+   }
+
+   .loginScreen__logo {
+      width: 100px;
+   }
+   .loginScreen__body > h1 {
+      font-size: 2.5rem;
+      margin-bottom: 15px;
+   }
+   .loginScreen__body > h2 {
+      font-size: 1.5rem;
+      margin-bottom: 25px;
+   }
+   .loginScreen__body > h3 {
+      font-size: 1rem;
+   }
+
+   .loginScreen__input > form > input {
+      height: 25px;
+      width: 25%;
+   }
+   .loginScreen__getStarted {
+      font-size: 0.82rem;
+   }
 }

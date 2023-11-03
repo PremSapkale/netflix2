@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { createContext, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import { Provider } from 'react-redux';
 import { store } from './app/store';
@@ -8,13 +8,36 @@ import './index.css';
 
 const container = document.getElementById('root');
 const root = createRoot(container);
+export const server = `https://netflix2-backend.onrender.com/v1`;
+export const Context = createContext({ isAuthenticated: false });
+
+const AppWrapper = () => {
+   const [isAuthenticated, setIsAuthenticated] = useState(false);
+   const [user, setUser] = useState({});
+   const [loading, setLoading] = useState(false);
+
+   return (
+      <Context.Provider
+         value={{
+            isAuthenticated,
+            setIsAuthenticated,
+            user,
+            setUser,
+            loading,
+            setLoading,
+         }}
+      >
+         <Provider store={store}>
+            <App />
+         </Provider>
+      </Context.Provider>
+   );
+};
 
 root.render(
-  <React.StrictMode>
-    <Provider store={store}>
-      <App />
-    </Provider>
-  </React.StrictMode>
+   <React.StrictMode>
+      <AppWrapper />
+   </React.StrictMode>
 );
 
 // If you want to start measuring performance in your app, pass a function

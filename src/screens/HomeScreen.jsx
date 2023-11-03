@@ -1,11 +1,16 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import '../styles/HomeScreen.css';
 import Nav from '../components/Nav';
 import Banner from '../components/Banner';
 import Row from '../components/Row';
 import requests from '../requests';
+import { Context } from '..';
+import { Navigate } from 'react-router-dom';
 
 const HomeScreen = () => {
+   const { isAuthenticated } = useContext(Context);
+
+   if (!isAuthenticated) return <Navigate to='/login' />;
    return (
       <div className='homeScreen'>
          <Nav />

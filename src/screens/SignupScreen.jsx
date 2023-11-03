@@ -1,57 +1,84 @@
-import React, { useRef } from 'react';
+import React, { useContext, useState } from 'react';
 import '../styles/SignupScreen.css';
-import { auth } from '../firebase';
+import axios from 'axios';
+import { Context, server } from '..';
+import { toast } from 'react-hot-toast';
+import { Link, Navigate } from 'react-router-dom';
 
 function SignUpScreen() {
-   const emailRef = useRef(null);
-   const passwordRef = useRef(null);
+   const [name, setName] = useState('');
+   const [email, setEmail] = useState('');
+   const [password, setPassword] = useState('');
+   const { isAuthenticated, setIsAuthenticated, loading, setLoading } =
+      useContext(Context);
 
-   // Create new user account using firebase authentication
-   const register = (e) => {
+   const signIn = async (e) => {
       e.preventDefault();
+      setLoading(true);
+      try {
+         const { data } = await axios.post(
+            `${server}/user/new`,
+            { name, email, password },
+            {
+               headers: {
+                  'Content-Type': 'application/json',
+               },
+               withCredentials: true,
+            }
+         );
 
-      auth
-         .createUserWithEmailAndPassword(
-            emailRef.current.value,
-            passwordRef.current.value
-         )
-         .then((authUser) => {
-            console.log(authUser);
-         })
-         .catch((error) => alert(error.message));
+         toast.success(data.message);
+         setIsAuthenticated(true);
+         setLoading(false);
+      } catch (error) {
+         toast.error(error.response.data.message);
+         setIsAuthenticated(false);
+         setLoading(false);
+      }
    };
 
-   // Sign in using the current user registered in firebase
-   const signIn = (e) => {
-      e.preventDefault();
-
-      auth
-         .signInWithEmailAndPassword(
-            emailRef.current.value,
-            passwordRef.current.value
-         )
-         .then((authUser) => {
-            console.log(authUser);
-         })
-         .catch((error) => alert(error.message));
-   };
+   if (isAuthenticated) return <Navigate to='/' />;
 
    return (
-      <div className='signupScreen'>
-         <form>
-            <h1>Sign In</h1>
-            <input ref={emailRef} type='email' placeholder='Email' />
-            <input ref={passwordRef} type='password' placeholder='Password' />
-            <button type='submit' onClick={signIn}>
-               Sign In
-            </button>
-            <h4>
-               <span className='signupScreen__gray'>New to Netflix? </span>
-               <span className='signupScreen__link' onClick={register}>
-                  Sign Up Now.
-               </span>
-            </h4>
-         </form>
+      <div className='loginScreen'>
+         <div className='loginScreen__background'>
+            <img className='loginScreen__logo' src='Netflix-logo.svg' alt='' />
+         </div>
+         <Link to='/login' className='loginScreen__button link'>
+            Login
+         </Link>
+         <div className='loginScreen__gradient'></div>
+         <div className='loginScreen__body'>
+            <div className='signupScreen'>
+               <form>
+                  <h1>Sign In</h1>
+                  <input
+                     value={name}
+                     onChange={(e) => setName(e.target.value)}
+                     type='text'
+                     placeholder='Name'
+                     required
+                  />
+                  <input
+                     value={email}
+                     onChange={(e) => setEmail(e.target.value)}
+                     type='email'
+                     placeholder='Email'
+                     required
+                  />
+                  <input
+                     value={password}
+                     onChange={(e) => setPassword(e.target.value)}
+                     type='password'
+                     placeholder='Password'
+                     required
+                  />
+                  <button type='submit' disabled={loading} onClick={signIn}>
+                     Sign In
+                  </button>
+               </form>
+            </div>
+         </div>
       </div>
    );
 }

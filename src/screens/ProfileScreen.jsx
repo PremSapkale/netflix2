@@ -1,12 +1,13 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import '../styles/ProfileScreen.css';
 import Nav from '../components/Nav';
-import { useSelector } from 'react-redux';
-import { selectUser } from '../features/userSlice';
-import { auth } from '../firebase';
+import axios from 'axios';
+import { Context, server } from '..';
+import { toast } from 'react-hot-toast';
+import { Navigate } from 'react-router-dom';
 
 function ProfileScreen() {
-   const user = useSelector(selectUser); // Redux globals
+   const { isAuthenticated, setIsAuthenticated, user } = useContext(Context);
    const plans = [
       {
          name: 'Premium',
@@ -23,6 +24,21 @@ function ProfileScreen() {
       },
    ];
 
+   const handleLogout = async () => {
+      try {
+         await axios.get(`${server}/user/logout`, {
+            withCredentials: true,
+         });
+         toast.success('Logged Out Successfully');
+         setIsAuthenticated(false);
+      } catch (error) {
+         toast.error(error.response.data.message);
+         setIsAuthenticated(true);
+      }
+   };
+
+   if (!isAuthenticated) return <Navigate to='/login' />;
+
    return (
       <div className='profileScreen'>
          <Nav />
@@ -31,7 +47,7 @@ function ProfileScreen() {
             <div className='profileScreen__info'>
                <img src='Netflix-avatar.png' alt='Avatar' />
                <div className='profileScreen__details'>
-                  <h2>{user.email}</h2>
+                  <h2>{user?.name}</h2>
                   <div className='profileScreen__plans'>
                      <div className='profileScreen__planTag'>
                         <h3>Plans</h3>
@@ -57,7 +73,7 @@ function ProfileScreen() {
                         </div>
                      ))}
                      <button
-                        onClick={() => auth.signOut()}
+                        onClick={handleLogout}
                         className='profileScreen__signOut'
                      >
                         Sign Out
